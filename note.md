@@ -6,3 +6,6 @@
 
 ### install ejs
     npm install ejs
+
+### install email validator
+    npm install validator
