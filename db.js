@@ -1,7 +1,10 @@
 //install mongodb npm install mongodb
 const {MongoClient} = require('mongodb')
 
-const client = new MongoClient('mongodb+srv://root:root@cluster0.cmcfzql.mongodb.net/nodeApp?retryWrites=true&w=majority')
+//npm install dotenv
+const dotenv = require("dotenv")
+dotenv.config()
+const client = new MongoClient(process.env.CONNECTIONSTRING)
 
 //don't know how long it will take for "client"
 async function start() {
@@ -10,7 +13,7 @@ async function start() {
     // module.export make database avaialbe from other files
     module.exports = client.db()
     const app = require("./app")
-    app.listen(3000)
+    app.listen(process.env.PORT)
 }
 
 start()

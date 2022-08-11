@@ -52,6 +52,18 @@ User.prototype.validate = function() {
     }
 }
 
+User.prototype.login = function() {
+    // this.cleanUp()
+    usersCollection.findOne({username: this.input.username}, (err, attemptedUser) => {
+        if(attemptedUser && attemptedUser.password == this.input.password){
+            console.log("logged in")
+            console.log(attemptedUser)
+        }else{
+            console.log("logged out")
+        }
+    })
+}
+
 User.prototype.register = function() {
     //validate user data
     this.cleanUp()
