@@ -13,12 +13,11 @@ User.prototype.cleanUp = function() {
         this.input.username = ""
     }
     if(typeof(this.input.email) != "string"){
-        this.input.username = ""
+        this.input.email = ""
     }
     if(typeof(this.input.password) != "string"){
-        this.input.username = ""
+        this.input.password = ""
     }
-
     //get rid of questionable properties, limit "data" to only these properties
     this.input = {
         //trim() will trim space in a value
@@ -53,15 +52,22 @@ User.prototype.validate = function() {
 }
 
 User.prototype.login = function() {
-    // this.cleanUp()
-    usersCollection.findOne({username: this.input.username}, (err, attemptedUser) => {
-        if(attemptedUser && attemptedUser.password == this.input.password){
-            console.log("logged in")
-            console.log(attemptedUser)
-        }else{
-            console.log("logged out")
-        }
+
+   return new Promise((resolve, reject) => {
+    this.cleanUp()
+    usersCollection.findOne({username: this.input.username}).then((attemptedUser) => {
+      
+            if(attemptedUser && attemptedUser.password == this.input.password){
+                resolve("logged in")
+            }else{
+                reject("logged out")
+            }
+
+    }).catch(function() {
+        reject("error")
     })
+
+})
 }
 
 User.prototype.register = function() {
