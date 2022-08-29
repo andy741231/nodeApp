@@ -45,7 +45,7 @@ User.prototype.validate = function() {
     //}
 
     // if username is valid check if it is taken
-    if(this.input.username.length>)
+   
     //npm install validator
     if(!validator.isEmail(this.input.email)){
         this.errors.push("Email is not valid")
