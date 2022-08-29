@@ -11,7 +11,7 @@ async function start() {
     await client.connect()
     // after connection => client.db()
     // module.export make database avaialbe from other files
-    module.exports = client.db()
+    module.exports = client
     const app = require("./app")
     app.listen(process.env.PORT)
 }

@@ -5,14 +5,24 @@ exports.login = function(req, res){
     // use callback function to wait for login()
     // traditional callback
     user.login().then(function(result) {
-        res.send(result)
+        req.session.user = {username: user.input.username}
+        req.session.save(function(){
+            res.redirect("/")
+        })
     }).catch(function(e) {
-        res.send(e)
+        // without flash package: req.session.flash.errors = [e]
+        req.flash('errors', e)
+        req.session.save(function(){
+            res.redirect("/")
+        })
     })
+
 }
 
-exports.logout = function(){
-    
+exports.logout = function(req, res){
+    req.session.destroy(function(){
+        res.redirect("/")
+    })
 }
 
 exports.register = function(req, res){
@@ -20,12 +30,22 @@ exports.register = function(req, res){
     let user = new User(req.body)
     user.register()
     if(user.errors.length) {
-     res.send(user.errors)
+        user.errors.forEach(function(error){
+            req.flash('regErrors', error)
+        })
+        req.session.save(function(){
+            res.redirect('/')
+        })
+        
     }else {
      res.send('yay!')
     }
 }
 
 exports.home = function(req, res){
-    res.render('home-guest')
+    if(req.session.user) {
+        res.render("register", {username: req.session.user.username})
+    } else {
+        res.render('home-guest', {errors: req.flash('errors'), regErrors: req.flash('regErrors')})
+    }
 }

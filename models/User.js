@@ -1,4 +1,6 @@
-const usersCollection = require('../db').collection("users")
+// npm install bcryptjs
+const bcrypt = require("bcryptjs")
+const usersCollection = require('../db').db().collection("users")
 const validator = require('validator')
 
 //reusable constructor function
@@ -38,9 +40,9 @@ User.prototype.validate = function() {
     if(this.input.password == ""){
         this.errors.push("Password cannot be empty")
     }
-    if(this.input.password.length > 0 && this.input.password.length < 6){
-        this.errors.push("Password needs to be more than 12 characters")
-    }
+    // if(this.input.password.length > 0 && this.input.password.length < 6){
+    //     this.errors.push("Password needs to be more than 12 characters")
+    //}
 
     //npm install validator
     if(!validator.isEmail(this.input.email)){
@@ -55,12 +57,13 @@ User.prototype.login = function() {
 
    return new Promise((resolve, reject) => {
     this.cleanUp()
+
     usersCollection.findOne({username: this.input.username}).then((attemptedUser) => {
       
-            if(attemptedUser && attemptedUser.password == this.input.password){
+            if(attemptedUser && bcrypt.compareSync(this.input.password, attemptedUser.password)){
                 resolve("logged in")
             }else{
-                reject("logged out")
+                reject("Invalid Username or Password")
             }
 
     }).catch(function() {
@@ -76,6 +79,9 @@ User.prototype.register = function() {
     this.validate()
     // no error save data
     if(!this.errors.length) {
+        //hash user password
+        let salt = bcrypt.genSaltSync(10)
+        this.input.password = bcrypt.hashSync(this.input.password, salt)
         usersCollection.insertOne(this.input)
     }
 }
