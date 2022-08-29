@@ -44,6 +44,8 @@ User.prototype.validate = function() {
     //     this.errors.push("Password needs to be more than 12 characters")
     //}
 
+    // if username is valid check if it is taken
+    if(this.input.username.length>)
     //npm install validator
     if(!validator.isEmail(this.input.email)){
         this.errors.push("Email is not valid")
