@@ -15,6 +15,11 @@ let sessionOptions = session({
 app.use(sessionOptions)
 app.use(flash())
 
+app.use(function(req, res, next){
+    //locals allow access to ejs objects
+    res.locals.user = req.session.user
+    next()
+})
 const router = require('./router.js')
 
 //letting express get value from html form (req.body => name = )

@@ -1,5 +1,16 @@
 const User = require('../models/User')
 
+exports.mustBeLoggedIn = function (req, res, next) {
+    if(req.session.user){
+        next()
+    }else{
+        req.flash("errors", "Please log in!")
+        req.session.save(function(){
+            res.redirect('/')
+        })
+    }
+}
+
 exports.login = function(req, res){
     let user = new User(req.body)
     // use callback function to wait for login()
@@ -43,9 +54,10 @@ exports.register = function(req, res){
     })
 }
 
+
 exports.home = function(req, res){
     if(req.session.user) {
-        res.render("register", {username: req.session.user.username})
+        res.render("register")
     } else {
         res.render('home-guest', {errors: req.flash('errors'), regErrors: req.flash('regErrors')})
     }
